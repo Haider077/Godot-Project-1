@@ -1,0 +1,81 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Textures/pTerrain.jpg" type="Texture" id=1]
+[ext_resource path="res://sketchfab/lo-poly_space_settlement_with_tower/scene.gltf" type="PackedScene" id=2]
+[ext_resource path="res://sketchfab/unsc_base/scene.gltf" type="PackedScene" id=4]
+[ext_resource path="res://Materials/moon.tres" type="Material" id=5]
+[ext_resource path="res://Models/waveFront.obj" type="ArrayMesh" id=6]
+[ext_resource path="res://Shaders/atmosphere.shader" type="Shader" id=7]
+[ext_resource path="res://assets/maujoe.camera_control/scripts/camera_control.gd" type="Script" id=8]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.521569, 0.933333, 0.14902, 1 )
+albedo_texture = ExtResource( 1 )
+
+[sub_resource type="SphereMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.145098, 0.388235, 0.564706, 1 )
+metallic = 0.39
+metallic_specular = 0.44
+roughness = 0.0
+refraction_enabled = true
+refraction_scale = 0.07
+refraction_texture_channel = 0
+
+[sub_resource type="CubeMesh" id=4]
+flip_faces = true
+size = Vector3( 55, 55, 55 )
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 7 )
+shader_param/light_intensity = Vector3( 20, 20, 20 )
+shader_param/planet_radius = 25.0
+shader_param/atmo_radius = 34.0
+shader_param/beta_ray = Vector3( 1, 2, 3 )
+shader_param/beta_mie = Vector3( 1, 1, 1 )
+shader_param/beta_ambient = Vector3( 0, 0, 0 )
+shader_param/beta_e = 0.0
+shader_param/g = 0.8
+shader_param/height_ray = 0.5
+shader_param/height_mie = 0.25
+shader_param/density_multiplier = 1.0
+shader_param/steps_i = 32
+shader_param/steps_l = 4
+
+[node name="Planet Config" type="Spatial"]
+
+[node name="moon" type="MeshInstance" parent="."]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 37.8739, 0.984253, -0.224304 )
+mesh = ExtResource( 6 )
+material/0 = ExtResource( 5 )
+
+[node name="moon base" parent="moon" instance=ExtResource( 4 )]
+transform = Transform( 0.00498181, -0.000348993, 0.000244516, 0.000377449, 0.00494558, -0.000631465, -0.000197779, 0.000647626, 0.00495394, -0.0755844, 0.996491, 0.242107 )
+
+[node name="Space City" parent="moon" instance=ExtResource( 2 )]
+transform = Transform( 3.54959e-05, -3.38087e-06, 1.01682e-06, 2.99236e-06, 4.06289e-05, -1.01198e-05, -1.10666e-07, 1.41774e-05, 5.25092e-05, -0.0655808, 0.991494, 0.249477 )
+
+[node name="Kashyk" type="MeshInstance" parent="."]
+transform = Transform( 27, 0, 0, 0, 27, 0, 0, 0, 27, -26.7858, 0, 0 )
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="ocean" type="MeshInstance" parent="Kashyk"]
+transform = Transform( 1.02, 0, 0, 0, 1.02, 0, 0, 0, 1.02, 0.00172901, 0, -0.000896301 )
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Kashyk/ocean"]
+transform = Transform( 0.0363108, 0, 0, 0, 0.0363108, 0, 0, 0, 0.0363108, 0, 0, 2.99778 )
+
+[node name="Atmosphere" type="MeshInstance" parent="Kashyk"]
+transform = Transform( 0.037037, 0, 0, 0, 0.037037, 0, 0, 0, 0.037037, 0.00277373, 0.000641271, 0.0757148 )
+mesh = SubResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.26502, 4.66375, 47.3947 )
+near = 0.01
+far = 8192.0
+script = ExtResource( 8 )
